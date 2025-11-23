@@ -7,16 +7,17 @@ import { FamilyGraphPage } from './components/views/FamilyGraphPage';
 import { FamilyGroupPage } from './components/views/FamilyGroupPage';
 import { ChatPage } from './components/views/ChatPage';
 import { MyProfilePage } from './components/views/MyProfilePage';
-import { GraphNode, GraphLink, RelationshipType, AddNodeFormData, ViewType } from './types';
+import { TimelinePage } from './components/views/TimelinePage';
+import { GraphNode, GraphLink, RelationshipType, AddNodeFormData, ViewType, Photo } from './types';
 
 // Initial Family Tree Data
 const INITIAL_NODES: GraphNode[] = [
-  { id: '1', name: 'Me', relationLabel: 'Self', bio: 'The center of this universe.', generation: 0, group: 1, age: '28', gender: 'Male', location: 'New York, USA', occupation: 'Software Engineer' },
-  { id: '2', name: 'Arthur', relationLabel: 'Father', bio: 'Hardworking man who loves fishing.', generation: -1, group: 2, age: '62', gender: 'Male' },
-  { id: '3', name: 'Molly', relationLabel: 'Mother', bio: 'The best cook in the world.', generation: -1, group: 2, age: '60', gender: 'Female' },
-  { id: '4', name: 'Ginny', relationLabel: 'Spouse', bio: 'My partner in crime.', generation: 0, group: 1, age: '27', gender: 'Female' },
-  { id: '5', name: 'James', relationLabel: 'Son', bio: 'Full of energy and mischief.', generation: 1, group: 3, age: '5', gender: 'Male' },
-  { id: '6', name: 'Albus', relationLabel: 'Son', bio: 'Quiet and thoughtful.', generation: 1, group: 3, age: '3', gender: 'Male' },
+  { id: '1', name: 'Me', relationLabel: 'Self', bio: 'The center of this universe.', generation: 0, group: 1, age: '28', gender: 'Male', location: 'New York, USA', occupation: 'Software Engineer', isCloseFamily: true },
+  { id: '2', name: 'Arthur', relationLabel: 'Father', bio: 'Hardworking man who loves fishing.', generation: -1, group: 2, age: '62', gender: 'Male', isCloseFamily: true },
+  { id: '3', name: 'Molly', relationLabel: 'Mother', bio: 'The best cook in the world.', generation: -1, group: 2, age: '60', gender: 'Female', isCloseFamily: true },
+  { id: '4', name: 'Ginny', relationLabel: 'Spouse', bio: 'My partner in crime.', generation: 0, group: 1, age: '27', gender: 'Female', isCloseFamily: true },
+  { id: '5', name: 'James', relationLabel: 'Son', bio: 'Full of energy and mischief.', generation: 1, group: 3, age: '5', gender: 'Male', isCloseFamily: true },
+  { id: '6', name: 'Albus', relationLabel: 'Son', bio: 'Quiet and thoughtful.', generation: 1, group: 3, age: '3', gender: 'Male', isCloseFamily: true },
 ];
 
 const INITIAL_LINKS: GraphLink[] = [
@@ -29,11 +30,31 @@ const INITIAL_LINKS: GraphLink[] = [
   { source: '4', target: '6', type: RelationshipType.PARENT_OF }, // Spouse -> Son
 ];
 
+const INITIAL_PHOTOS: Photo[] = [
+  {
+    id: '1',
+    url: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&auto=format&fit=crop&q=60',
+    description: 'Family hiking trip to the mountains.',
+    date: '2023-06-15',
+    taggedNodeIds: ['1', '2', '3'], // Me, Dad, Mom
+    privacy: 'ALL'
+  },
+  {
+    id: '2',
+    url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&auto=format&fit=crop&q=60',
+    description: 'James and Albus playing in the park.',
+    date: '2024-03-10',
+    taggedNodeIds: ['5', '6'], // Kids
+    privacy: 'CLOSE_FAMILY'
+  }
+];
+
 export default function App() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [view, setView] = useState<ViewType>('HOME');
   const [nodes, setNodes] = useState<GraphNode[]>(INITIAL_NODES);
   const [links, setLinks] = useState<GraphLink[]>(INITIAL_LINKS);
+  const [photos, setPhotos] = useState<Photo[]>(INITIAL_PHOTOS);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
 
   const handleAuthSuccess = (userData: { name: string; email: string }) => {
@@ -97,7 +118,8 @@ export default function App() {
       relationLabel: data.relationLabel,
       bio: data.bio || 'New family member',
       generation: newGeneration,
-      group: Math.abs(newGeneration) % 5 + 1
+      group: Math.abs(newGeneration) % 5 + 1,
+      isCloseFamily: data.isCloseFamily
     };
 
     const newLink: GraphLink = {
@@ -123,6 +145,10 @@ export default function App() {
     if (selectedNode?.id === nodeId) {
       setSelectedNode(null);
     }
+  };
+
+  const handleAddPhoto = (photo: Photo) => {
+    setPhotos(prev => [photo, ...prev]);
   };
 
   if (!user) {
@@ -162,6 +188,14 @@ export default function App() {
           <FamilyGroupPage 
             nodes={nodes} 
             onNodeClick={setSelectedNode} 
+          />
+        )}
+
+        {view === 'TIMELINE' && (
+          <TimelinePage 
+            photos={photos} 
+            nodes={nodes} 
+            onAddPhoto={handleAddPhoto} 
           />
         )}
 

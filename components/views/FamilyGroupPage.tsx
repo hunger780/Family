@@ -1,6 +1,6 @@
 import React from 'react';
 import { GraphNode } from '../../types';
-import { Search } from 'lucide-react';
+import { Search, ShieldCheck } from 'lucide-react';
 
 interface FamilyGroupPageProps {
   nodes: GraphNode[];
@@ -30,8 +30,16 @@ export const FamilyGroupPage: React.FC<FamilyGroupPageProps> = ({ nodes, onNodeC
           <div 
             key={node.id}
             onClick={() => onNodeClick(node)}
-            className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-pink-500/50 transition-all cursor-pointer group shadow-lg"
+            className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-pink-500/50 transition-all cursor-pointer group shadow-lg relative overflow-hidden"
           >
+            {node.isCloseFamily && (
+              <div className="absolute top-0 right-0 p-2">
+                 <div className="text-emerald-500/50 group-hover:text-emerald-500 transition-colors" title="Close Family Member">
+                   <ShieldCheck size={18} />
+                 </div>
+              </div>
+            )}
+
             <div className="flex items-center gap-4 mb-4">
               <div className={`w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-lg ${
                 node.generation === 0 ? 'bg-pink-600' : (node.generation < 0 ? 'bg-indigo-600' : 'bg-emerald-600')

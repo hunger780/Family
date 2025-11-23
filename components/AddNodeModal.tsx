@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GraphNode, AddNodeFormData } from '../types';
 import { generateBio } from '../services/geminiService';
-import { X, Sparkles, UserPlus } from 'lucide-react';
+import { X, Sparkles, UserPlus, ShieldCheck } from 'lucide-react';
 
 interface AddNodeModalProps {
   isOpen: boolean;
@@ -16,7 +16,8 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onA
     relationLabel: '',
     bio: '',
     relatedNodeId: '',
-    relationshipType: 'PARENT'
+    relationshipType: 'PARENT',
+    isCloseFamily: false
   });
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -40,7 +41,7 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onA
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <UserPlus className="text-pink-500" />
@@ -107,6 +108,27 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onA
                 />
               </div>
             </div>
+          </div>
+
+          <div className="bg-emerald-900/20 p-4 rounded-xl border border-emerald-900/50">
+            <label className="flex items-center justify-between cursor-pointer">
+              <div>
+                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
+                  <ShieldCheck size={16} />
+                  <span>Mark as Close Family</span>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">Allows this person to see private family photos.</p>
+              </div>
+              <div className="relative">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer"
+                  checked={formData.isCloseFamily}
+                  onChange={(e) => setFormData({...formData, isCloseFamily: e.target.checked})}
+                />
+                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </div>
+            </label>
           </div>
 
           <div>

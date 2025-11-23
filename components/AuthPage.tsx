@@ -40,7 +40,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
             <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
               <Heart className="text-white fill-white" size={32} />
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Nexus Graph</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Family</h1>
             <p className="text-slate-400 mt-2 text-center">
               {isLogin ? 'Welcome back to your family tree' : 'Start building your legacy today'}
             </p>

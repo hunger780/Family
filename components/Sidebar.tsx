@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Network, Users, MessageCircle, UserCircle, LogOut, Heart } from 'lucide-react';
+import { Home, Network, Users, MessageCircle, UserCircle, LogOut, Heart, Image as ImageIcon } from 'lucide-react';
 import { ViewType } from '../types';
 
 interface SidebarProps {
@@ -14,6 +14,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, onLogout
     { id: 'HOME', label: 'Home', icon: <Home size={20} /> },
     { id: 'GRAPH', label: 'Family Tree', icon: <Network size={20} /> },
     { id: 'GROUP', label: 'Family Group', icon: <Users size={20} /> },
+    { id: 'TIMELINE', label: 'Memories', icon: <ImageIcon size={20} /> },
     { id: 'CHATS', label: 'Family Chats', icon: <MessageCircle size={20} /> },
     { id: 'PROFILE', label: 'My Profile', icon: <UserCircle size={20} /> },
   ];

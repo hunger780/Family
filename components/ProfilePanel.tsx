@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GraphNode } from '../types';
-import { X, User, Sparkles, Trash2, Edit2, Save, Users, MapPin, Briefcase, Calendar } from 'lucide-react';
+import { X, User, Sparkles, Trash2, Edit2, Save, Users, MapPin, Briefcase, Calendar, ShieldCheck } from 'lucide-react';
 import { generateBio } from '../services/geminiService';
 
 interface ProfilePanelProps {
@@ -56,9 +56,17 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
         </div>
 
         <div className="flex flex-col items-center mb-8">
-          <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg border-2 border-slate-700 ${node.generation === 0 ? 'bg-pink-500' : 'bg-slate-600'}`}>
-            {node.name.charAt(0).toUpperCase()}
+          <div className="relative">
+            <div className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg border-2 border-slate-700 ${node.generation === 0 ? 'bg-pink-500' : 'bg-slate-600'}`}>
+              {node.name.charAt(0).toUpperCase()}
+            </div>
+            {node.isCloseFamily && !isEditing && (
+              <div className="absolute top-0 right-0 bg-emerald-500 text-white p-1 rounded-full border-2 border-slate-800" title="Close Family Member">
+                <ShieldCheck size={14} />
+              </div>
+            )}
           </div>
+          
           {isEditing && editedNode ? (
             <input 
               className="bg-slate-700 border border-slate-600 text-white rounded px-2 py-1 text-center font-bold text-xl w-full focus:outline-none focus:border-pink-500"
@@ -82,6 +90,30 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
         </div>
 
         <div className="space-y-6">
+          {/* Permissions / Close Family Toggle */}
+          {isEditing && editedNode && (
+            <div className="bg-emerald-900/20 p-4 rounded-xl border border-emerald-900/50">
+              <label className="flex items-center justify-between cursor-pointer">
+                <div>
+                  <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
+                    <ShieldCheck size={16} />
+                    <span>Close Family Member</span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">Grants privileges to view private photos.</p>
+                </div>
+                <div className="relative">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={editedNode.isCloseFamily || false}
+                    onChange={(e) => setEditedNode({...editedNode, isCloseFamily: e.target.checked})}
+                  />
+                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                </div>
+              </label>
+            </div>
+          )}
+
           {/* Info Grid */}
           <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 grid grid-cols-2 gap-4">
              <div>
@@ -164,6 +196,12 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
                    <span className="block text-slate-500 text-xs">Generation</span>
                    <span className="text-slate-300 font-mono">
                      {node.generation === 0 ? "Current (0)" : node.generation > 0 ? `+${node.generation} (Descendant)` : `${node.generation} (Ancestor)`}
+                   </span>
+                </div>
+                <div>
+                   <span className="block text-slate-500 text-xs">Access Level</span>
+                   <span className={`font-medium ${node.isCloseFamily ? 'text-emerald-400' : 'text-slate-400'}`}>
+                     {node.isCloseFamily ? 'Close Family' : 'Extended Family'}
                    </span>
                 </div>
              </div>

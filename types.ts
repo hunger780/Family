@@ -18,6 +18,9 @@ export interface GraphNode {
   gender?: string;
   location?: string;
   occupation?: string;
+  
+  // Permissions
+  isCloseFamily?: boolean;
 
   // d3-force simulation properties
   index?: number;
@@ -38,6 +41,15 @@ export interface GraphLink {
   index?: number;
 }
 
+export interface Photo {
+  id: string;
+  url: string;
+  description: string;
+  date: string; // YYYY-MM-DD
+  taggedNodeIds: string[];
+  privacy: 'ALL' | 'CLOSE_FAMILY';
+}
+
 // Helper types for UI
 export type AddNodeFormData = {
   name: string;
@@ -45,6 +57,7 @@ export type AddNodeFormData = {
   bio: string;
   relatedNodeId: string;
   relationshipType: 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING';
+  isCloseFamily: boolean;
 };
 
-export type ViewType = 'HOME' | 'GRAPH' | 'GROUP' | 'CHATS' | 'PROFILE';
+export type ViewType = 'HOME' | 'GRAPH' | 'GROUP' | 'CHATS' | 'PROFILE' | 'TIMELINE';
