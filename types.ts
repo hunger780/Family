@@ -50,6 +50,17 @@ export interface Photo {
   privacy: 'ALL' | 'CLOSE_FAMILY';
 }
 
+export interface Event {
+  id: string;
+  title: string;
+  date: string; // YYYY-MM-DD
+  time?: string;
+  location: string;
+  description: string;
+  type: 'BIRTHDAY' | 'GATHERING' | 'HOLIDAY' | 'OTHER';
+  invitees?: string[]; // List of GraphNode IDs
+}
+
 // Helper types for UI
 export type AddNodeFormData = {
   name: string;
@@ -60,4 +71,4 @@ export type AddNodeFormData = {
   isCloseFamily: boolean;
 };
 
-export type ViewType = 'HOME' | 'GRAPH' | 'GROUP' | 'CHATS' | 'PROFILE' | 'TIMELINE';
+export type ViewType = 'HOME' | 'GRAPH' | 'GROUP' | 'CHATS' | 'PROFILE' | 'TIMELINE' | 'EVENTS';

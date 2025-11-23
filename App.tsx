@@ -8,7 +8,8 @@ import { FamilyGroupPage } from './components/views/FamilyGroupPage';
 import { ChatPage } from './components/views/ChatPage';
 import { MyProfilePage } from './components/views/MyProfilePage';
 import { TimelinePage } from './components/views/TimelinePage';
-import { GraphNode, GraphLink, RelationshipType, AddNodeFormData, ViewType, Photo } from './types';
+import { EventsPage } from './components/views/EventsPage';
+import { GraphNode, GraphLink, RelationshipType, AddNodeFormData, ViewType, Photo, Event } from './types';
 
 // Initial Family Tree Data
 const INITIAL_NODES: GraphNode[] = [
@@ -49,12 +50,36 @@ const INITIAL_PHOTOS: Photo[] = [
   }
 ];
 
+const INITIAL_EVENTS: Event[] = [
+  {
+    id: '1',
+    title: 'Family Reunion BBQ',
+    date: '2024-07-20',
+    time: '12:00',
+    location: 'Central Park',
+    description: 'Annual family gathering with food, games, and fun.',
+    type: 'GATHERING',
+    invitees: ['1', '2', '3', '4', '5', '6']
+  },
+  {
+    id: '2',
+    title: 'Dad\'s 63rd Birthday',
+    date: '2024-08-15',
+    time: '18:00',
+    location: 'Arthur\'s House',
+    description: 'Dinner and cake to celebrate Dad.',
+    type: 'BIRTHDAY',
+    invitees: ['2', '3']
+  }
+];
+
 export default function App() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [view, setView] = useState<ViewType>('HOME');
   const [nodes, setNodes] = useState<GraphNode[]>(INITIAL_NODES);
   const [links, setLinks] = useState<GraphLink[]>(INITIAL_LINKS);
   const [photos, setPhotos] = useState<Photo[]>(INITIAL_PHOTOS);
+  const [events, setEvents] = useState<Event[]>(INITIAL_EVENTS);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
 
   const handleAuthSuccess = (userData: { name: string; email: string }) => {
@@ -151,6 +176,14 @@ export default function App() {
     setPhotos(prev => [photo, ...prev]);
   };
 
+  const handleAddEvent = (event: Event) => {
+    setEvents(prev => [...prev, event]);
+  };
+
+  const handleUpdateEvent = (updatedEvent: Event) => {
+    setEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+  };
+
   if (!user) {
     return <AuthPage onAuthSuccess={handleAuthSuccess} />;
   }
@@ -196,6 +229,15 @@ export default function App() {
             photos={photos} 
             nodes={nodes} 
             onAddPhoto={handleAddPhoto} 
+          />
+        )}
+
+        {view === 'EVENTS' && (
+          <EventsPage 
+            events={events}
+            nodes={nodes}
+            onAddEvent={handleAddEvent}
+            onUpdateEvent={handleUpdateEvent}
           />
         )}
 
