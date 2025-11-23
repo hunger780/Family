@@ -4,6 +4,11 @@ export enum RelationshipType {
   SIBLING_OF = 'SIBLING_OF',
 }
 
+export interface Family {
+  id: string;
+  name: string;
+}
+
 export interface GraphNode {
   id: string;
   name: string;
@@ -12,6 +17,7 @@ export interface GraphNode {
   generation: number; // 0 for user, -1 for parents, 1 for children
   group?: number; 
   imageUrl?: string;
+  familyIds: string[]; // IDs of families this person belongs to
   
   // Basic Profile Details
   age?: string;
@@ -69,6 +75,7 @@ export type AddNodeFormData = {
   relatedNodeId: string;
   relationshipType: 'PARENT' | 'CHILD' | 'SPOUSE' | 'SIBLING';
   isCloseFamily: boolean;
+  familyIds: string[];
 };
 
 export type ViewType = 'HOME' | 'GRAPH' | 'GROUP' | 'CHATS' | 'PROFILE' | 'TIMELINE' | 'EVENTS';

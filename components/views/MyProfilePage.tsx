@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { GraphNode } from '../../types';
-import { User, MapPin, Calendar, Briefcase, Heart, Save } from 'lucide-react';
+import { User, MapPin, Calendar, Briefcase, Heart, Save, LogOut } from 'lucide-react';
 
 interface MyProfilePageProps {
   userNode: GraphNode;
   onUpdate: (updatedNode: GraphNode) => void;
+  onLogout?: () => void;
 }
 
-export const MyProfilePage: React.FC<MyProfilePageProps> = ({ userNode, onUpdate }) => {
+export const MyProfilePage: React.FC<MyProfilePageProps> = ({ userNode, onUpdate, onLogout }) => {
   const [formData, setFormData] = useState({
     name: userNode.name,
     age: userNode.age || '',
@@ -31,11 +32,23 @@ export const MyProfilePage: React.FC<MyProfilePageProps> = ({ userNode, onUpdate
   };
 
   return (
-    <div className="flex-1 h-full bg-slate-900 overflow-y-auto p-8 flex justify-center">
+    <div className="flex-1 h-full bg-slate-900 overflow-y-auto p-4 md:p-8 flex justify-center">
       <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-bold text-white mb-8">My Profile</h1>
+        <div className="flex justify-between items-center mb-8">
+           <h1 className="text-3xl font-bold text-white">My Profile</h1>
+           {/* Mobile Logout Button */}
+           {onLogout && (
+             <button 
+               onClick={onLogout}
+               className="md:hidden flex items-center gap-2 text-red-400 hover:text-red-300 bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-900/50 text-sm"
+             >
+               <LogOut size={16} />
+               Sign Out
+             </button>
+           )}
+        </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl mb-24">
           <div className="h-32 bg-gradient-to-r from-pink-600 to-indigo-600 relative">
              <div className="absolute -bottom-12 left-8 w-24 h-24 bg-slate-900 rounded-full p-1.5">
                <div className="w-full h-full bg-slate-700 rounded-full flex items-center justify-center text-3xl font-bold text-white border-2 border-white/10">
@@ -44,7 +57,7 @@ export const MyProfilePage: React.FC<MyProfilePageProps> = ({ userNode, onUpdate
              </div>
           </div>
           
-          <div className="pt-16 px-8 pb-8">
+          <div className="pt-16 px-6 md:px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -135,13 +148,13 @@ export const MyProfilePage: React.FC<MyProfilePageProps> = ({ userNode, onUpdate
               <div className="pt-4 flex items-center gap-4">
                 <button 
                   type="submit"
-                  className="flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg shadow-pink-500/20 active:scale-95"
+                  className="w-full md:w-auto flex items-center justify-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg shadow-pink-500/20 active:scale-95"
                 >
                   <Save size={18} />
                   Save Changes
                 </button>
                 {isSaved && (
-                  <span className="text-emerald-400 text-sm font-medium animate-fade-in">Profile Updated Successfully!</span>
+                  <span className="text-emerald-400 text-sm font-medium animate-fade-in whitespace-nowrap">Saved!</span>
                 )}
               </div>
             </form>

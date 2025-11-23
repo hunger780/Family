@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 import { GraphNode, AddNodeFormData } from '../types';
 import { generateBio } from '../services/geminiService';
-import { X, Sparkles, UserPlus, ShieldCheck } from 'lucide-react';
+import { X, Sparkles, UserPlus, ShieldCheck, Users, Check } from 'lucide-react';
 
 interface AddNodeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdd: (data: AddNodeFormData) => void;
   existingNodes: GraphNode[];
+  families: { id: string; name: string }[];
+  currentFamilyId: string;
 }
 
-export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAdd, existingNodes }) => {
+export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAdd, existingNodes, families, currentFamilyId }) => {
   const [formData, setFormData] = useState<AddNodeFormData>({
     name: '',
     relationLabel: '',
     bio: '',
     relatedNodeId: '',
     relationshipType: 'PARENT',
-    isCloseFamily: false
+    isCloseFamily: false,
+    familyIds: currentFamilyId !== 'all' ? [currentFamilyId] : []
   });
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -34,9 +37,25 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onA
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name && formData.relatedNodeId) {
-      onAdd(formData);
+      // Default to the current family if no family is selected manually (and current is not 'all')
+      let finalFamilyIds = formData.familyIds;
+      if (finalFamilyIds.length === 0 && currentFamilyId !== 'all') {
+        finalFamilyIds = [currentFamilyId];
+      }
+      
+      onAdd({ ...formData, familyIds: finalFamilyIds });
       onClose();
     }
+  };
+
+  const toggleFamily = (familyId: string) => {
+    setFormData(prev => {
+      if (prev.familyIds.includes(familyId)) {
+        return { ...prev, familyIds: prev.familyIds.filter(id => id !== familyId) };
+      } else {
+        return { ...prev, familyIds: [...prev.familyIds, familyId] };
+      }
+    });
   };
 
   return (
@@ -107,6 +126,33 @@ export const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onA
                   onChange={e => setFormData({...formData, relationLabel: e.target.value})}
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+            <div className="flex items-center gap-2 text-slate-400 mb-3 text-sm uppercase tracking-wider font-semibold">
+              <Users size={16} />
+              <span>Add to Families</span>
+            </div>
+            <div className="space-y-2">
+              {families.filter(f => f.id !== 'all').map(family => (
+                <div 
+                  key={family.id}
+                  onClick={() => toggleFamily(family.id)}
+                  className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors border ${
+                    formData.familyIds.includes(family.id) 
+                      ? 'bg-indigo-600/20 border-indigo-500/30' 
+                      : 'bg-slate-800 border-transparent hover:border-slate-600'
+                  }`}
+                >
+                  <span className={`text-sm ${formData.familyIds.includes(family.id) ? 'text-indigo-200' : 'text-slate-400'}`}>
+                    {family.name}
+                  </span>
+                  {formData.familyIds.includes(family.id) && (
+                    <Check size={14} className="text-indigo-400" />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 

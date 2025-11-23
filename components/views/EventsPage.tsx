@@ -85,15 +85,15 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, nodes, onAddEven
 
   return (
     <div className="flex-1 h-full bg-slate-900 overflow-y-auto relative">
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Family Events</h1>
-            <p className="text-slate-400">Upcoming gatherings and celebrations.</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Family Events</h1>
+            <p className="text-slate-400 text-sm md:text-base">Upcoming gatherings and celebrations.</p>
           </div>
           <button 
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20"
+            className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20 text-sm md:text-base"
           >
             <Plus size={18} />
             <span>Add Event</span>
@@ -132,7 +132,7 @@ export const EventsPage: React.FC<EventsPageProps> = ({ events, nodes, onAddEven
                 <div className="p-6 flex-1 relative">
                   <button 
                     onClick={() => handleOpenModal(event)}
-                    className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-full transition-colors opacity-100 md:opacity-0 group-hover:opacity-100"
                     title="Edit Event"
                   >
                     <Edit2 size={16} />

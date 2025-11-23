@@ -21,7 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, onLogout
   ];
 
   return (
-    <div className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full shrink-0">
+    <div className="hidden md:flex w-64 bg-slate-900 border-r border-slate-800 flex-col h-full shrink-0">
       <div className="p-6 flex items-center gap-3">
         <div className="w-8 h-8 bg-pink-600 rounded-lg flex items-center justify-center shadow-lg shadow-pink-600/20">
           <Heart className="text-white fill-white" size={16} />

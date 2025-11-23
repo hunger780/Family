@@ -59,15 +59,15 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ photos, nodes, onAdd
 
   return (
     <div className="flex-1 h-full bg-slate-900 overflow-y-auto relative">
-      <div className="p-8 pb-4">
+      <div className="p-4 md:p-8 pb-4">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Family Memories</h1>
-            <p className="text-slate-400">A timeline of cherished moments.</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Family Memories</h1>
+            <p className="text-slate-400 text-sm md:text-base">A timeline of cherished moments.</p>
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20"
+            className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-colors shadow-lg shadow-pink-500/20 text-sm md:text-base"
           >
             <Plus size={18} />
             <span>Add Memory</span>
@@ -75,23 +75,23 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ photos, nodes, onAdd
         </div>
       </div>
 
-      <div className="p-8 pt-0 relative max-w-4xl mx-auto">
+      <div className="p-4 md:p-8 pt-0 relative max-w-4xl mx-auto">
         {/* Vertical Timeline Line */}
-        <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-800 -ml-px"></div>
+        <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-800 -ml-px"></div>
 
         {sortedPhotos.length === 0 ? (
           <div className="text-center py-20 text-slate-500 relative z-10">
             <p>No photos yet. Start adding memories!</p>
           </div>
         ) : (
-          <div className="space-y-12 pb-12">
+          <div className="space-y-8 md:space-y-12 pb-12">
             {sortedPhotos.map((photo, index) => {
               const isEven = index % 2 === 0;
               return (
-                <div key={photo.id} className={`relative flex flex-col md:flex-row gap-8 items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                <div key={photo.id} className={`relative flex flex-col md:flex-row gap-4 md:gap-8 items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
                   
                   {/* Timeline Dot */}
-                  <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-pink-500 rounded-full border-4 border-slate-900 -ml-2 shadow-[0_0_0_4px_rgba(236,72,153,0.2)] z-10"></div>
+                  <div className="absolute left-6 md:left-1/2 w-4 h-4 bg-pink-500 rounded-full border-4 border-slate-900 -ml-2 shadow-[0_0_0_4px_rgba(236,72,153,0.2)] z-10 translate-y-[0px] top-[0px] md:top-auto"></div>
                   
                   {/* Date Label (Desktop) */}
                   <div className={`hidden md:block w-1/2 text-center text-sm font-bold text-slate-500 ${isEven ? 'text-left pl-8' : 'text-right pr-8'}`}>
@@ -99,7 +99,7 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ photos, nodes, onAdd
                   </div>
 
                   {/* Content Card */}
-                  <div className="w-full md:w-1/2 pl-16 md:pl-0">
+                  <div className="w-full md:w-1/2 pl-12 md:pl-0 mt-4 md:mt-0">
                     <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow group">
                       <div className="relative aspect-video bg-slate-900 overflow-hidden">
                          <img src={photo.url} alt={photo.description} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -113,12 +113,12 @@ export const TimelinePage: React.FC<TimelinePageProps> = ({ photos, nodes, onAdd
                            </div>
                          )}
                       </div>
-                      <div className="p-5">
+                      <div className="p-4 md:p-5">
                          {/* Date Label (Mobile) */}
                          <div className="md:hidden text-xs font-bold text-pink-500 mb-2 uppercase tracking-wide">
                             {new Date(photo.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                          </div>
-                         <p className="text-white text-lg font-medium mb-3">{photo.description}</p>
+                         <p className="text-white text-base md:text-lg font-medium mb-3">{photo.description}</p>
                          
                          {photo.taggedNodeIds.length > 0 && (
                            <div className="flex items-start gap-2 text-sm text-slate-400">

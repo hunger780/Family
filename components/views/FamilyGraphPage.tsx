@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ForceGraph } from '../ForceGraph';
 import { AddNodeModal } from '../AddNodeModal';
-import { GraphNode, GraphLink, AddNodeFormData } from '../../types';
+import { GraphNode, GraphLink, AddNodeFormData, Family } from '../../types';
 import { Plus, Info } from 'lucide-react';
 
 interface FamilyGraphPageProps {
@@ -10,6 +10,8 @@ interface FamilyGraphPageProps {
   onNodeClick: (node: GraphNode) => void;
   onBackgroundClick: () => void;
   onAddNode: (data: AddNodeFormData) => void;
+  families: Family[];
+  currentFamilyId: string;
 }
 
 export const FamilyGraphPage: React.FC<FamilyGraphPageProps> = ({ 
@@ -17,17 +19,19 @@ export const FamilyGraphPage: React.FC<FamilyGraphPageProps> = ({
   links, 
   onNodeClick, 
   onBackgroundClick,
-  onAddNode
+  onAddNode,
+  families,
+  currentFamilyId
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="relative w-full h-full bg-slate-900 overflow-hidden flex flex-col">
       {/* Header Overlay */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-6 pointer-events-none flex justify-end">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 md:p-6 pointer-events-none flex justify-end mt-12 md:mt-0">
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="pointer-events-auto flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-medium transition-all shadow-lg shadow-pink-500/20 active:scale-95"
+          className="pointer-events-auto flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-medium transition-all shadow-lg shadow-pink-500/20 active:scale-95 text-sm md:text-base"
         >
           <Plus size={18} />
           <span className="hidden sm:inline">Add Member</span>
@@ -59,6 +63,8 @@ export const FamilyGraphPage: React.FC<FamilyGraphPageProps> = ({
           onClose={() => setIsModalOpen(false)}
           onAdd={onAddNode}
           existingNodes={nodes}
+          families={families}
+          currentFamilyId={currentFamilyId}
         />
       )}
     </div>

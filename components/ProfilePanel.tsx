@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { GraphNode } from '../types';
-import { X, User, Sparkles, Trash2, Edit2, Save, Users, MapPin, Briefcase, Calendar, ShieldCheck, Mail } from 'lucide-react';
+import { GraphNode, Family } from '../types';
+import { X, User, Sparkles, Trash2, Edit2, Save, Users, MapPin, Briefcase, Calendar, ShieldCheck, Mail, Check } from 'lucide-react';
 import { generateBio } from '../services/geminiService';
 import { WelcomeLetterModal } from './WelcomeLetterModal';
 
@@ -10,9 +10,10 @@ interface ProfilePanelProps {
   onClose: () => void;
   onUpdate: (updatedNode: GraphNode) => void;
   onDelete: (nodeId: string) => void;
+  families: Family[];
 }
 
-export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClose, onUpdate, onDelete }) => {
+export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClose, onUpdate, onDelete, families }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedNode, setEditedNode] = useState<GraphNode | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -47,9 +48,21 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
     }
   };
 
+  const toggleFamily = (familyId: string) => {
+    if (!editedNode) return;
+    const currentIds = editedNode.familyIds || [];
+    let newIds;
+    if (currentIds.includes(familyId)) {
+      newIds = currentIds.filter(id => id !== familyId);
+    } else {
+      newIds = [...currentIds, familyId];
+    }
+    setEditedNode({ ...editedNode, familyIds: newIds });
+  };
+
   return (
     <>
-      <div className={`fixed top-0 right-0 h-full w-96 bg-slate-800/95 backdrop-blur-md border-l border-slate-700 shadow-2xl transform transition-transform duration-300 ease-in-out z-20 overflow-y-auto ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-slate-800/95 backdrop-blur-md border-l border-slate-700 shadow-2xl transform transition-transform duration-300 ease-in-out z-30 overflow-y-auto ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-white">Family Profile</h2>
@@ -125,6 +138,50 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
                   </div>
                 </label>
               </div>
+            )}
+
+            {/* Families Selection in Edit Mode */}
+            {isEditing && editedNode && (
+              <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                <div className="flex items-center gap-2 text-slate-400 mb-3 text-sm uppercase tracking-wider font-semibold">
+                  <Users size={16} />
+                  <span>Belongs to Families</span>
+                </div>
+                <div className="space-y-2">
+                  {families.filter(f => f.id !== 'all').map(family => (
+                    <div 
+                      key={family.id}
+                      onClick={() => toggleFamily(family.id)}
+                      className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors border ${
+                        editedNode.familyIds?.includes(family.id) 
+                          ? 'bg-indigo-600/20 border-indigo-500/30' 
+                          : 'bg-slate-800 border-transparent hover:border-slate-600'
+                      }`}
+                    >
+                      <span className={`text-sm ${editedNode.familyIds?.includes(family.id) ? 'text-indigo-200' : 'text-slate-400'}`}>
+                        {family.name}
+                      </span>
+                      {editedNode.familyIds?.includes(family.id) && (
+                        <Check size={14} className="text-indigo-400" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* View Mode Family Chips */}
+            {!isEditing && node.familyIds && node.familyIds.length > 0 && (
+               <div className="flex flex-wrap gap-2">
+                 {node.familyIds.map(fid => {
+                   const fam = families.find(f => f.id === fid);
+                   return fam ? (
+                     <span key={fid} className="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full border border-slate-600">
+                       {fam.name}
+                     </span>
+                   ) : null;
+                 })}
+               </div>
             )}
 
             {/* Info Grid */}
@@ -221,7 +278,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({ node, isOpen, onClos
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-700 flex gap-4 mb-10">
+          <div className="mt-8 pt-6 border-t border-slate-700 flex gap-4 mb-20 md:mb-10">
              {isEditing ? (
                <>
                  <button 
